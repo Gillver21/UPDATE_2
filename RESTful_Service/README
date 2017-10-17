@@ -1,0 +1,128 @@
+NOTE:
+It is best to download and view this README. 
+
+
+
+To view an HTML version of this README including screenshots visit:
+URL to REST SERVICE PROJECT MENTIONED ON OUR PRIVATE SLACK SPACE
+
+
+
+For clarification of how to implement the Server essentially from scratch visit the following link to view the Supporting Documenmtation:
+URL to SUPPORTING DOCUMENTATION MENTIONED ON OUR PRIVATE SLACK SPACE
+
+
+
+To Watch the Supporting Documentation's acoompanying videos (from an earlier iteration) view:
+Demonstration of RESTful_Service Part 1:
+ https://www.youtube.com/watch?v=3ckpYTQVENI
+Demonstration of RESTful_Service Part 2:
+ https://www.youtube.com/watch?v=scMSIuAjX-k
+
+
+
+Problem:
+Create a RESTFUL Service which implements an ephemeral text message service to demonstrate how well I can implement the lessons I learned from Application Security
+
+
+Stipulations:
+Cannot ask for help and may only use the Internet as a resource
+
+
+
+Approach:
+Initial:
+Determine which elements of project will be most/least difficult and attempt to organize time accordingly
+Create Git Repository to manage your work/iterations
+Read and assure I understand the requirements outlined in the PDF from Application Security
+Read documentation from online to understand fundamentals involved in creation of RESTFUL Service
+
+
+
+Planned/Hypothetical Implementation
+Create an environment which will house files and data relevant to the project
+Decide which OS will be most appropriate for project
+Decide which Virtualized environment will serve my purpose best
+Decide which Languages would best be able to complete this task (in which case I will naturally start with Python)
+Research the limitations associated with one's preference of language and decide if pursuing another avenue is more feasible
+Implement organized solution based on documentation found online 
+Document any deviations taken from the source documentation necessary to make the solution operate
+Document errors encountered while attempting to implement the solution
+Create test cases related to the solution's implementation to pinpoint exactly how to most assuredly implement it with the least risk of error
+Test to see if solution captures any and all messages and record test cases
+Determine how to store text messages within the environment you have created and how you will differentiate aged messaged from new arrival
+
+
+
+
+Implementation:
+Server's Host environment requires user to have pre-registered AWS Account along with pre-configured Ubuntu Server 16.04 - Free Tier Instance. User should also note their machine's (their client machine's) public IP address and assure that it has the Git CLI installed
+After these assurances are in place, create a Security Group rule in AWS's instance Management Console specifying remote host's/client machine's Public IP Space, and port client will use to connect to the Server
+
+- On AWS Ubuntu Server:
+User clones Git Repository here: https://github.com/Gillver21/RESTful_Service  into a user specified directory
+Navigates to    <directory>/RESTful_Service/SERVER/DEPENDENCIES/INSTALLATIONS
+Runs chmod a+x on installs.sh
+chmod a+x installs.sh
+Runs installs.sh file to configure Server environment using the command:
+./installs.sh
+Navigates to <directory>/RESTful_Service/SERVER/tests/src
+Opens test_harness.py and replaces the line:
+app.run(host='0.0.0.0', debug=True, port=****)      - with
+app.run(host='0.0.0.0', debug=True, port=[INTEGER OF PORT NUMBER USER OPEN IN AWS SECURITY GROUP])
+e.g.  app.run(host='0.0.0.0', debug=True, port=5000)
+User then goes into AWS User Console to find the Ubuntu Server's Public IP Address and records it
+- NOTE:
+Find Your Flask Server Host's Public IP Address by viewing the address under the "IPv4 Public IP" header category  on the Running Instances Page of the AWS Console:
+In our case in teh screenshot below it is  54.84.155.17 
+ 
+- On Client Machine:
+User clones Git Repository here: https://github.com/Gillver21/RESTful_Service  into a user specified directory
+Navigates to    <directory>/RESTful_Service/CLIENT/DEPENDENCIES/REPLACE_SERVER_IP
+Opens the replace_server_ip.sh file
+Finds the line:
+sudo find ../.. -type f -exec sed -i "s/:\*\*\*\*/\[REMOTE_SERVER_IP\]/g" {} +
+And replaces   \[REMOTE_SERVER_IP\]  with   the IP address and port number allowed in AWS Security Group for the   AWS Ubuntu Server
+In the case of our example it results in the command:
+sudo find ../.. -type f -exec sed -i "s/:\*\*\*\*/54.84.155.17:5000/g" {} +
+User runs chmod a+x on  replace_server_ip.sh    using the command:
+chmod a+x replace_server_ip.sh
+User runs  replace_server_ip.sh   using the command
+./replace_server_ip.sh
+
+- On AWS Ubuntu Server Instance Again:
+User navigates to    <directory>/RESTful_Service/SERVER/tests/src
+User runs test_harness.py file using the command:
+python ./test_harness.py
+
+- To run the test cases, on Client Machine Again:
+User should navigate to  <directory>/RESTful_Service/CLIENT/add_text_message and run the   add_text_message.sh file using the command:
+./add_text_message.sh
+User then has the choice of naviagting to either <directory>/RESTful_Service/CLIENT/search_text_id or <directory>/RESTful_Service/CLIENT/search_username      OR
+May essentially run all three files (add_text_message.sh, search_text_id.sh, and search_username.sh) by:
+Navigating to    <directory>/RESTful_Service/CLIENT/dynamic   and running the file   dynamic.sh by using the command
+./dynamic
+
+- While viewing both the client and server, the user should see the responses to the requests and the output on both the Client and Server
+To provide a more detailed understanding of the implementation and use of this RESTful Service see the link below:
+REST Service Project Supporting Documentation
+To watch the details of the implementation refer to the linked videos
+
+
+
+Conclusions:
+Although the project fulfills to the programmatic stipulations of the assignment, to clean it up and make a more robust solution which handles exceptions, may take a bit more time
+There are certain errors I want to account for, which were beyond scope, but which still should be fixed if the project is adopted by another individual
+Python's Threading Library (used to run multiple functions at the same time), is reportedly unreliable and additionally is difficult to understand and use, so I made a workaround to fulfill the stipulations for the project
+Need to gain a better understanding of Python's Flask library and of CURL to understand how I could have improved script
+
+
+
+Next Steps:
+Read further into AWS' CLI to better automate project and make it more headless
+Read Python's Flask Library documentation in depth to gain a better understanding of it
+Consider how this solution might be built out in order to truly provide others with assistance (i.e., by housing instructional information they may desire to gather)
+Read about and experiment with CURL to discover exactly what it's numerous switches do
+Better familiarize myself with the BASH CLI related to Ubuntu and other Linux instances to make more informed decisions about which environments to stage certain projects within
+
+
