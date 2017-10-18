@@ -2,12 +2,15 @@
 
 
 #User read -p to allows user to input data into variable
-###sudo read -p "Please enter the port number within the range you opened in AWS Security Group Console:" port_aws
-read -p "Please enter the IP Address appended with the Port number you opened in the AWS Security Group Console in the form [IP_ADDRESS]:[PORT_NUMBER]   (e.g. 34.15.213.50:5000 ):" ip_port_aws
+###sudo read -p "Please enter the IP Address of the Remote Server: " ip_aws
+read -p "Please enter the IP Address of the Remote Server: " ip_aws
+###sudo read -p "Please enter the port number within the range you opened in AWS Security Group Console ( e.g. 5000 ): " open_port_aws
+read -p "Please enter the port number within the range you opened in AWS Security Group Console ( e.g. 5000 ): " open_port_aws
+
 
 
 #Set the value user entered into environment variable for the prompt AWS_PORT
-IP_PORT_AWS=$ip_port_aws
+IP_PORT_AWS=$ip_aws:$port_aws
 
 
 #Find .sh files from downloaded Git repository and replace denoted string with IP of REMOTE Server
