@@ -10,7 +10,7 @@ read -p "Please enter the port number within the range you opened in AWS Securit
 
 
 #Set the value user entered into environment variable for the prompt AWS_PORT
-IP_PORT_AWS=$ip_aws:$port_aws
+IP_PORT_AWS=$ip_aws:$open_port_aws
 
 
 #Find .sh files from downloaded Git repository and replace denoted string with IP of REMOTE Server
