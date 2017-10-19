@@ -17,8 +17,8 @@ IP_PORT_AWS=$ip_aws:$open_port_aws
 sudo find .. -type f -not -name "replace*" -exec sed -i "s/:\*\*\*\*/$IP_PORT_AWS/g" {} + > /dev/null 2>&1
 find .. -type f -not -name "replace*" -exec sed -i "s/:\*\*\*\*/$IP_PORT_AWS/g" {} +
 #Making file re-usable allowing user to replace IP_and_PORT with newly specified IP_and_PORT if user wishes to change
-sudo find .. -type f -name "*.sh" -not -name "replace*" -exec sed -i -E "s/[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+:[0-9]+/$IP_PORT_AWS/g" {} + > /dev/null 2>&1
-find .. -type f -name "*.sh" -not -name "replace*" -exec sed -i -E "s/[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+:[0-9]+/$IP_PORT_AWS/g" {} +
+sudo find .. -type f -name "*.sh" -not -name "replace*" -exec sed -i -E "s/[0-9]+.[0-9]+.[0-9]+.[0-9]+:[0-9]+/$IP_PORT_AWS/g" {} + > /dev/null 2>&1
+find .. -type f -name "*.sh" -not -name "replace*" -exec sed -i -E "s/[0-9]+.[0-9]+.[0-9]+.[0-9]+:[0-9]+/$IP_PORT_AWS/g" {} +
 
 
 
