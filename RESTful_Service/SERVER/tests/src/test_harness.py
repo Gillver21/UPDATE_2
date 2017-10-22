@@ -27,9 +27,6 @@ expiration_times_array = []
 chats_username_array = []
 #Declare chats_username_expire_id_array
 chats_username_expire_id_array = []
-#LEGACY VARIABLE - Declaring variable recur formerly used to find current time and date and perform calculation to see whether chat/ids should be expired
-#Variable recur essential for current iteration of script only for while loop which emcompasses entire script -- will remove
-recur = list(re.findall('([\d]+):([\d]+):([\d]+)', str(datetime.datetime.now())[:19])[0])
 
 
 
@@ -37,6 +34,16 @@ recur = list(re.findall('([\d]+):([\d]+):([\d]+)', str(datetime.datetime.now())[
 app = Flask('__main__')
 
 
+
+#Perform calculation of how many seconds chat has to live/is unexpired
+#Done by taking the chat/ids' associated expiration time and subtracting that from the current time
+def set_chat_id_timeout(current_time):
+	for i in range(len(expiration_times_array)):
+		chats[i]["timeout"]=expiration_times_array[i]-current_time
+
+
+
+#Based on expiration_times_array, use expire_chat() function to move chats whose timeout period has expired into expired_chats array
 def expire_chat():
 	if expiration_times_array != []:
 		#Use embedded for loop with break statement to reset the value of length of arrays to account for elements deleted
@@ -48,8 +55,10 @@ def expire_chat():
 					del expiration_times_array[ii]
 					break
 					
+
 					
-def check_arrays():		
+#Based on id passed to it, return whether chat/id exists in expired chats or unexpired chats arrays and return its info
+def check_arrays(id):
 	#Checking both the unexpired and expired arrays to see if the specified id exists within them
 	for i in range(len(chats)):
 		if chats[i]["id"] == id:
@@ -72,6 +81,7 @@ def add_to_chats(username,text,timeout_1=60):
 	#Taking the current time which will be used to produce the message ttl(time to live)/timeout/expiration time
 	current_time = time.time()
 	
+
 				
 	#If JSON element timeout specified in data passed, set variable timeout_1 equal to that value
 	#Variable timeout_1 to create and expiration time for currently queried chat message
@@ -108,18 +118,12 @@ def add_to_chats(username,text,timeout_1=60):
 							
 	#Add formatted chat to unexpired chats list
 	chats.append(add_chat)
-				
-
-	#Perform calculation of how many seconds chat has to live/is unexpired
-	#Done by taking the chat/ids' associated expiration time and subtracting that from the current time
-	for i in range(len(expiration_times_array)):
-		chats[i]["timeout"]=expiration_times_array[i]-current_time
 	
 				
 	#If chat/id exists, find associated expiration time in expiration_times_array and move it to expired_chats array if expiration time equal to or below 0 (is negative), and do nothing/keep it in unexpired if timeout still above 0
 	if expiration_times_array != []:
+		set_chat_id_timeout(current_time)
 		expire_chat()
-		check_arrays()		
 				
 	#times1.append(list(re.findall('([\d]+):([\d]+):([\d]+)', str(datetime.datetime.now())[:19])[0]))
 	#if times1 != []:
@@ -158,20 +162,23 @@ def return_chats_id(id):
 			
 	#Perform calculation of how many seconds chat has to live/is unexpired
 	#Done by taking the chat/ids' associated expiration time and subtracting that from the current time
-	for i in range(len(expiration_times_array)):
-		chats[i]["timeout"]=expiration_times_array[i]-current_time
+	set_chat_id_timeout(current_time)
+	
 		
 	#If chat/id exists, find associated expiration time in expiration_times_array and move it to expired_chats array if expiration time equal to or below 0 (is negative), and do nothing/keep it in unexpired if timeout still above 0
 	if expiration_times_array != []:
 		expire_chat()
-		check_arrays()		
+		return check_arrays(id)		
+		
+		
+		###Usable and non-usable expirements
+		#respone_for_chat_id = check_arrays(id)		
+	#return respone_for_chat_id
+	#WRONG:WILL-ERROR: return jsonify({"chats": chats})
 			
 			
 	
 
-			
-			
-			
 #Declaring sub-route/path foreign hosts will use to interact with REST Service /chat/id endpoint
 @app.route('/chats/<string:username>', methods=['GET'])
 def return_chats_username(username):
@@ -185,11 +192,12 @@ def return_chats_username(username):
 				
 	#Taking current time which will be used to determine if chat needs to be expired
 	current_time = time.time()
-				
+	
+	
 	#Perform calculation of how many seconds chat has to live/is unexpired
 	#Done by taking the chat/ids' associated expiration time and subtracting that from the current time
-	for i in range(len(expiration_times_array)):
-		chats[i]["timeout"]=expiration_times_array[i]-current_time
+	set_chat_id_timeout(current_time)
+	
 		
 	#If chat/id exists, find associated expiration time in expiration_times_array and move it to expired_chats array if expiration time equal to or below 0 (is negative), and do nothing/keep it in unexpired if timeout still above 0
 	if expiration_times_array != []:
@@ -227,7 +235,3 @@ def return_chats_username(username):
 #Running app instance of Flask with Debugging if there is an error
 #When the run method of the object of the Flask class is called, it automatically executes functions decorated with the object name
 app.run(host='0.0.0.0', debug=True, port=5000)
-
-		
-
-#Calling main function to initiate script
